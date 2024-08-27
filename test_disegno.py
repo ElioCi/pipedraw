@@ -16,7 +16,7 @@ def check_referrer():
 
     # Ottenere il referrer attraverso query parameters
     ref = st.query_params.get_all('referrer')
-    
+    st.write("ref=", ref)
     # URL del sito permesso
     allowed_referrer = 'https://www.enginapps.it/pipe-insulated-drawing/'
 
