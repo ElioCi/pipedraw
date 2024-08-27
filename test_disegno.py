@@ -18,12 +18,12 @@ def check_referrer():
     ref = st.experimental_get_query_params().get('referrer', [''])[0]
     
     # URL del sito permesso
-    allowed_referrer = 'https://enginapps.it'
+    allowed_referrer = 'https://www.enginapps.it/pipe-insulated-drawing/'
 
     # Controlla se il referrer è valido
     if not ref.startswith(allowed_referrer):
         st.write("Accesso non consentito. Sarai reindirizzato a breve...")
-        st.markdown('<meta http-equiv="refresh" content="3;url=https://enginapps.it">', unsafe_allow_html=True)
+        st.markdown('<meta http-equiv="refresh" content="3;url=https://www.enginapps.it/pipe-insulated-drawing/">', unsafe_allow_html=True)
         st.stop()
     else:
         st.write("Benvenuto nella pagina protetta!")
