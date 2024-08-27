@@ -15,7 +15,7 @@ def check_referrer():
     st.markdown(referrer, unsafe_allow_html=True)
 
     # Ottenere il referrer attraverso query parameters
-    ref = st.query_params.get_all('referrer')[0]
+    ref = st.query_params.get_all('referrer')
     
     # URL del sito permesso
     allowed_referrer = 'https://www.enginapps.it/pipe-insulated-drawing/'
