@@ -1,4 +1,4 @@
-import streamlit as st
+naimport streamlit as st
 import matplotlib.pyplot as plt
 import matplotlib.patches as patches
 from urllib.parse import urlparse
@@ -6,7 +6,7 @@ from urllib.parse import urlparse
 # Funzione di reindirizzamento
 def redirect_to_site():
     js = """<script type="text/javascript">
-    window.location.href = 'https://tuosito.com';
+    window.location.href = 'https://enginapps.it';
     </script>"""
     st.markdown(js, unsafe_allow_html=True)
 
@@ -16,7 +16,7 @@ referer = st.experimental_get_query_params().get('_referer')
 # Verifica se l'app è stata aperta dal sito WordPress
 if referer:
     domain = urlparse(referer[0]).netloc
-    if 'tuosito.com' not in domain:
+    if 'enginapps.it' not in domain:
         redirect_to_site()
 else:
     redirect_to_site()
