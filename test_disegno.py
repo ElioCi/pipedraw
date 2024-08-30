@@ -1,40 +1,29 @@
 import streamlit as st
 import matplotlib.pyplot as plt
 import matplotlib.patches as patches
+from urllib.parse import urlparse
 
+# Funzione di reindirizzamento
+def redirect_to_site():
+    js = """<script type="text/javascript">
+    window.location.href = 'https://tuosito.com';
+    </script>"""
+    st.markdown(js, unsafe_allow_html=True)
 
-def check_referrer():
-    # Inserisci lo script JavaScript per ottenere il referrer
-    referrer = """
-    <script>
-    document.write(document.referrer);
-    </script>
-    """
+# Ottieni il referrer (il sito che ha fatto la richiesta)
+referer = st.experimental_get_query_params().get('_referer')
 
-    # Mostra il referrer usando st.markdown con il parametro unsafe_allow_html=True
-    st.markdown(referrer, unsafe_allow_html=True)
+# Verifica se l'app è stata aperta dal sito WordPress
+if referer:
+    domain = urlparse(referer[0]).netloc
+    if 'tuosito.com' not in domain:
+        redirect_to_site()
+else:
+    redirect_to_site()
 
-    # Ottenere il referrer attraverso query parameters
-    ref = st.experimental_get_query_params().get('referrer', [''])[0]
-    st.write("ref=", ref)
-    # URL del sito permesso
-    allowed_referrer = 'https://www.enginapps.it'
-
-    # Controlla se il referrer è valido
-    if not ref.startswith(allowed_referrer):
-        st.write("Accesso non consentito. Sarai reindirizzato a breve...")
-        st.markdown('<meta http-equiv="refresh" content="3;url=https://www.enginapps.it">', unsafe_allow_html=True)
-        st.stop()
-    else:
-        st.write("Benvenuto nella pagina protetta!")
-
-# Layout della pagina
-st.title("Pagina Protetta")
-
-# Controllo del referrer
-check_referrer()
-
-st.write("Contenuto della pagina protetta...")
+# Il resto del codice della tua app Streamlit
+st.title('Benvenuto nella mia App Streamlit!')
+st.write('Questa è la tua app, accessibile solo tramite il sito WordPress.')
 
 
 
