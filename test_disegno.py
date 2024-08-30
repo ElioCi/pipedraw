@@ -2,22 +2,36 @@ import streamlit as st
 import matplotlib.pyplot as plt
 import matplotlib.patches as patches
 from urllib.parse import urlparse
+from http.cookies import SimpleCookie
 
-# Funzione di reindirizzamento
-def redirect_to_site():
-    js = """<script type="text/javascript">
-    if (document.referrer === '' || !document.referrer.includes('enginapps.it')) {
-        window.location.href = 'https:/enginapps.it';
-    }
-    </script>"""
+# Funzione per impostare un cookie
+def set_cookie(key, value):
+    js = f"""
+    <script>
+    document.cookie = "{key}={value}; path=/";
+    </script>
+    """
     st.markdown(js, unsafe_allow_html=True)
 
-# Esegui la funzione di reindirizzamento
-redirect_to_site()
+# Funzione per ottenere un cookie
+def get_cookie(key):
+    cookies = SimpleCookie(st.experimental_get_query_params().get('_cookies', [""])[0])
+    return cookies.get(key).value if key in cookies else None
+
+# Verifica se il parametro 'auth' è presente nella query string
+query_params = st.experimental_get_query_params()
+if "auth" in query_params and query_params["auth"][0] == "true":
+    # Imposta un cookie per identificare che l'utente è autorizzato
+    set_cookie("authorized", "true")
+elif get_cookie("authorized") != "true":
+    # Se il cookie non è presente, reindirizza al sito WordPress
+    st.markdown("""<script>window.location.href = 'https://enginapps.it';</script>""", unsafe_allow_html=True)
+    st.stop()
 
 # Il resto del codice della tua app Streamlit
 st.title('Benvenuto nella mia App Streamlit!')
 st.write('Questa è la tua app, accessibile solo tramite il sito WordPress.')
+
 
 
 # Titolo dell'applicazione
