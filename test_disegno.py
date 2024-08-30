@@ -6,25 +6,18 @@ from urllib.parse import urlparse
 # Funzione di reindirizzamento
 def redirect_to_site():
     js = """<script type="text/javascript">
-    window.location.href = 'https://enginapps.it';
+    if (document.referrer === '' || !document.referrer.includes('enginapps.it')) {
+        window.location.href = 'https:/enginapps.it';
+    }
     </script>"""
     st.markdown(js, unsafe_allow_html=True)
 
-# Ottieni il referrer (il sito che ha fatto la richiesta)
-referer = st.experimental_get_query_params().get('_referer')
-
-# Verifica se l'app è stata aperta dal sito WordPress
-if referer:
-    domain = urlparse(referer[0]).netloc
-    if 'enginapps.it' not in domain:
-        redirect_to_site()
-else:
-    redirect_to_site()
+# Esegui la funzione di reindirizzamento
+redirect_to_site()
 
 # Il resto del codice della tua app Streamlit
 st.title('Benvenuto nella mia App Streamlit!')
 st.write('Questa è la tua app, accessibile solo tramite il sito WordPress.')
-
 
 
 # Titolo dell'applicazione
