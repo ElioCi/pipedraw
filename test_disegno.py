@@ -47,6 +47,9 @@ def validate_token(token):
 query_params = st.experimental_get_query_params()
 token = query_params.get("token", [None])[0]
 
+st.write("token=", token)
+st.write("validate=", validate_token(token))
+
 # Verifica se il token è presente e valido
 if token and validate_token(token):
     st.title('Benvenuto nella mia App Streamlit!')
