@@ -35,7 +35,7 @@ import requests
 
 # Funzione per validare il token tramite un'API esterna
 def validate_token(token):
-    api_url = f"https://tuosito.com/wp-json/myplugin/v1/validate_token?token={token}"
+    api_url = f"https://enginapps.it/wp-json/myplugin/v1/validate_token?token={token}"
     
     try:
         response = requests.get(api_url)
