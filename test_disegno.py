@@ -33,15 +33,27 @@ import requests
 #st.title('Benvenuto nella mia App Streamlit!')
 #st.write('Questa è la tua app, accessibile solo tramite il sito WordPress.')
 
-# Funzione per validare il token
+# Funzione per validare il token tramite un'API esterna
 def validate_token(token):
-    api_url = f"https://enginapps.it/wp-json/myplugin/v1/validate_token?token={token}"
-    response = requests.get(api_url)
+    api_url = f"https://tuosito.com/wp-json/myplugin/v1/validate_token?token={token}"
     
-    # Verifica lo stato della risposta
-    if response.status_code == 200:
-        return True
-    return False
+    try:
+        response = requests.get(api_url)
+        
+        # Verifica che la risposta sia positiva (status code 200)
+        if response.status_code == 200:
+            validation_result = response.json()  # L'API dovrebbe restituire True o False come JSON
+            if validation_result:
+                return True
+            else:
+                st.error("Token non valido.")
+                return False
+        else:
+            st.error(f"Errore di validazione del token: {response.status_code}")
+            return False
+    except Exception as e:
+        st.error(f"Errore durante la chiamata API: {e}")
+        return False
 
 # Estrai il token dai parametri della query
 query_params = st.experimental_get_query_params()
