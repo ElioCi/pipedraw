@@ -93,7 +93,7 @@ st.set_page_config(page_title="App Protetta", page_icon="🔒")
 # Estrai il token dai parametri URL
 query_params = st.experimental_get_query_params()
 token = query_params.get("token", [None])[0]
-st.wrte("token=", token)
+st.write("token=", token)
 
 if token is None or not verify_token(token):
     st.error("Accesso negato: Token non valido o scaduto.")
