@@ -1,7 +1,9 @@
 import streamlit as st
 import matplotlib.pyplot as plt
 import matplotlib.patches as patches
-#from urllib.parse import urlparse
+import jwt  # Assicurati di installare la libreria con 'pip install pyjwt'
+from urllib.parse import urlparse, parse_qs
+import time
 #from http.cookies import SimpleCookie
 import requests
 
@@ -34,41 +36,76 @@ import requests
 #st.write('Questa è la tua app, accessibile solo tramite il sito WordPress.')
 
 # Funzione per validare il token tramite un'API esterna
-def validate_token(token):
-    api_url = f"https://enginapps.it/wp-json/myplugin/v1/validate_token?token={token}"
+#def validate_token(token):
+#    api_url = f"https://enginapps.it/wp-json/myplugin/v1/validate_token?token={token}"
     
-    try:
-        response = requests.get(api_url)
+#    try:
+#        response = requests.get(api_url)
         
-        # Verifica che la risposta sia positiva (status code 200)
-        if response.status_code == 200:
-            validation_result = response.json()  # L'API dovrebbe restituire True o False come JSON
-            if validation_result:
-                return True
-            else:
-                st.error("Token non valido.")
-                return False
-        else:
-            st.error(f"Errore di validazione del token: {response.status_code}")
+#        # Verifica che la risposta sia positiva (status code 200)
+#        if response.status_code == 200:
+#            validation_result = response.json()  # L'API dovrebbe restituire True o False come JSON
+#            if validation_result:
+#                return True
+#            else:
+#                st.error("Token non valido.")
+#                return False
+#        else:
+#            st.error(f"Errore di validazione del token: {response.status_code}")
+#            return False
+#    except Exception as e:
+#        st.error(f"Errore durante la chiamata API: {e}")
+#        return False
+
+## Estrai il token dai parametri della query
+#query_params = st.experimental_get_query_params()
+#token = query_params.get("token", [None])[0]
+
+#st.write("token=", token)
+#st.write("validate=", validate_token(token))
+
+## Verifica se il token è presente e valido
+#if token and validate_token(token):
+#    st.title('Benvenuto nella mia App Streamlit!')
+#    st.write('Questa è la tua app, accessibile solo tramite il sito WordPress.')
+#else:
+#    st.markdown("""<script>window.location.href = 'https://tuosito.com';</script>""", unsafe_allow_html=True)
+#    st.stop()
+
+import streamlit as st
+import jwt  # Assicurati di installare la libreria con 'pip install pyjwt'
+import time
+from urllib.parse import urlparse, parse_qs
+
+def verify_token(token):
+    try:
+        secret_key = 'EC1'  # Deve corrispondere a quella usata in WordPress
+        payload = jwt.decode(token, secret_key, algorithms=["HS256"])
+        if payload['exp'] < time.time():
             return False
-    except Exception as e:
-        st.error(f"Errore durante la chiamata API: {e}")
+        return True
+    except jwt.ExpiredSignatureError:
+        return False
+    except jwt.InvalidTokenError:
         return False
 
-# Estrai il token dai parametri della query
+st.set_page_config(page_title="App Protetta", page_icon="🔒")
+
+# Estrai il token dai parametri URL
 query_params = st.experimental_get_query_params()
 token = query_params.get("token", [None])[0]
 
-st.write("token=", token)
-st.write("validate=", validate_token(token))
-
-# Verifica se il token è presente e valido
-if token and validate_token(token):
-    st.title('Benvenuto nella mia App Streamlit!')
-    st.write('Questa è la tua app, accessibile solo tramite il sito WordPress.')
-else:
-    st.markdown("""<script>window.location.href = 'https://tuosito.com';</script>""", unsafe_allow_html=True)
+if token is None or not verify_token(token):
+    st.error("Accesso negato: Token non valido o scaduto.")
     st.stop()
+else:
+    st.session_state['streamlitToken'] = token
+
+# Il codice della tua applicazione Streamlit va qui sotto
+st.title("Benvenuto nella tua app protetta!")
+st.write("Hai accesso all'applicazione perché hai fornito un token valido.")
+
+
 
 # Titolo dell'applicazione
 st.title("Sezione di un Tubo con Doppio Isolamento e Lamierino Esterno")
