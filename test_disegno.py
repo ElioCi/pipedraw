@@ -94,6 +94,7 @@ query_params = st.experimental_get_query_params()
 token = query_params.get("token", [None])[0]
 st.write("token=", token)
 verify_token(token)
+payload = jwt.decode(token, 'EC1', algorithms=["HS256"])
 st.write("payload = ", payload['exp'])
 st.write("time = ", time.time())
 if token is None or not verify_token(token):
