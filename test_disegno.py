@@ -80,9 +80,11 @@ def verify_token(token):
 
         
         if payload['exp'] < time.time():
+            st.write("payload < time")
             return False
         return True
     except jwt.ExpiredSignatureError:
+        st.write("jwt ExpiredSignatureError")
         return False
     except jwt.InvalidTokenError:
         return False
@@ -93,10 +95,8 @@ st.set_page_config(page_title="App Protetta", page_icon="🔒")
 query_params = st.experimental_get_query_params()
 token = query_params.get("token", [None])[0]
 st.write("token=", token)
-verify_token(token)
-payload = jwt.decode(token, 'EC1', algorithms=["HS256"])
-st.write("payload = ", payload['exp'])
-st.write("time = ", time.time())
+st.write("verify_token(token)=", verify_token(token))
+
 if token is None or not verify_token(token):
     st.error("Accesso negato: Token non valido o scaduto.")
     st.stop()
