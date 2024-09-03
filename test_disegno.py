@@ -77,8 +77,7 @@ def verify_token(token):
     try:
         secret_key = 'EC1'  # Deve corrispondere a quella usata in WordPress
         payload = jwt.decode(token, secret_key, algorithms=["HS256"])
-        st.write("payload = ", payload['exp'])
-        st.write("time = ", time.time())
+
         
         if payload['exp'] < time.time():
             return False
@@ -94,7 +93,9 @@ st.set_page_config(page_title="App Protetta", page_icon="🔒")
 query_params = st.experimental_get_query_params()
 token = query_params.get("token", [None])[0]
 st.write("token=", token)
-
+verify_token(token)
+st.write("payload = ", payload['exp'])
+st.write("time = ", time.time())
 if token is None or not verify_token(token):
     st.error("Accesso negato: Token non valido o scaduto.")
     st.stop()
