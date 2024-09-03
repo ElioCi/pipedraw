@@ -73,39 +73,41 @@ import requests
 #    st.stop()
 
 
+import streamlit as st
+import jwt
+from jwt import PyJWTError
+import time
+
+# Chiave segreta utilizzata per firmare il token
+SECRET_KEY = 'la-tua-chiave-segreta'
+
+# Funzione per verificare il token
 def verify_token(token):
     try:
-        secret_key = 'EC1'  # Deve corrispondere a quella usata in WordPress
-        payload = jwt.decode(token, secret_key, algorithms=["HS256"])
+        # Decodifica e verifica il token
+        decoded_token = jwt.decode(token, SECRET_KEY, algorithms=["HS256"])
+        return decoded_token
+    except PyJWTError as e:
+        # Token non valido o scaduto
+        st.error("Token non valido o scaduto: " + str(e))
+        return None
 
-        
-        if payload['exp'] < time.time():
-            st.write("payload < time")
-            return False
-        return True
-    except jwt.ExpiredSignatureError:
-        st.write("jwt ExpiredSignatureError")
-        return False
-    except jwt.InvalidTokenError:
-        return False
-
-st.set_page_config(page_title="App Protetta", page_icon="🔒")
-
-# Estrai il token dai parametri URL
+# Acquisisci il token dai parametri dell'URL
 query_params = st.experimental_get_query_params()
 token = query_params.get("token", [None])[0]
-st.write("token=", token)
-st.write("verify_token(token)=", verify_token(token))
 
-if token is None or not verify_token(token):
-    st.error("Accesso negato: Token non valido o scaduto.")
-    st.stop()
+if token:
+    # Verifica il token
+    decoded_token = verify_token(token)
+    if decoded_token:
+        st.success("Accesso autorizzato!")
+        st.write("Token decodificato:", decoded_token)
+        # Inserisci qui il codice dell'applicazione Streamlit
+    else:
+        st.error("Accesso negato: token non valido o scaduto.")
 else:
-    st.session_state['streamlitToken'] = token
+    st.error("Nessun token fornito, accesso negato.")
 
-# Il codice della tua applicazione Streamlit va qui sotto
-st.title("Benvenuto nella tua app protetta!")
-st.write("Hai accesso all'applicazione perché hai fornito un token valido.")
 
 
 
