@@ -72,15 +72,14 @@ import requests
 #    st.markdown("""<script>window.location.href = 'https://tuosito.com';</script>""", unsafe_allow_html=True)
 #    st.stop()
 
-import streamlit as st
-import jwt  # Assicurati di installare la libreria con 'pip install pyjwt'
-import time
-from urllib.parse import urlparse, parse_qs
 
 def verify_token(token):
     try:
         secret_key = 'EC1'  # Deve corrispondere a quella usata in WordPress
         payload = jwt.decode(token, secret_key, algorithms=["HS256"])
+        st.write("payload = ", payload['exp'])
+        st.write("time = ", time.time())
+        
         if payload['exp'] < time.time():
             return False
         return True
@@ -94,6 +93,7 @@ st.set_page_config(page_title="App Protetta", page_icon="🔒")
 # Estrai il token dai parametri URL
 query_params = st.experimental_get_query_params()
 token = query_params.get("token", [None])[0]
+st.wrte("token=", token)
 
 if token is None or not verify_token(token):
     st.error("Accesso negato: Token non valido o scaduto.")
