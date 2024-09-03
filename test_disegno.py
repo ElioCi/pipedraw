@@ -105,8 +105,10 @@ if token:
         # Inserisci qui il codice dell'applicazione Streamlit
     else:
         st.error("Accesso negato: token non valido o scaduto.")
+        stop
 else:
     st.error("Nessun token fornito, accesso negato.")
+    stop
 
 
 
