@@ -79,7 +79,7 @@ from jwt import PyJWTError
 import time
 
 # Chiave segreta utilizzata per firmare il token
-SECRET_KEY = 'la-tua-chiave-segreta'
+SECRET_KEY = 'EC1'
 
 # Funzione per verificare il token
 def verify_token(token):
